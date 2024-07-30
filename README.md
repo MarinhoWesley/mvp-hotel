@@ -51,8 +51,22 @@ This project implements a WhatsApp-based chatbot to assist with the internal man
 
 ### Instalação / Installation
 
-1. Clone o repositório / Clone the repository:
-   ```sh
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+Clone o repositório e siga os passos abaixo:
+
+```sh
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd seu-repositorio
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Configure as variáveis de ambiente criando um arquivo `.env` na raiz do projeto e adicionando suas chaves de API:
+echo "OPENAI_API_KEY=your_openai_api_key" >> .env
+echo "TWILIO_ACCOUNT_SID=your_twilio_account_sid" >> .env
+echo "TWILIO_AUTH_TOKEN=your_twilio_auth_token" >> .env
+
+# Execute o servidor Flask:
+flask run
+
+### Agora você pode interagir com o chatbot via WhatsApp! / Now you can interact with the chatbot via WhatsApp!
 
