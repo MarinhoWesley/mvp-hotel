@@ -4,10 +4,9 @@ import sys
 # Adicionar o diretório raiz do projeto ao sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import os
-import sys
 import requests
 import logging
+import openai
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from common.database import carregar_dados_usuarios
@@ -24,6 +23,9 @@ load_dotenv()
 zapster_api_token = os.getenv('ZAPSTER_API_TOKEN')
 zapster_base_url = 'https://new-api.zapsterapi.com'
 zapster_instance_id = os.getenv('ZAPSTER_INSTANCE_ID')  # Certifique-se de que este é o ID correto e ativo
+
+# Configurar API da OpenAI
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
 
@@ -90,6 +92,21 @@ def enviar_mensagem(destinatario, mensagem):
         logging.error("JSONDecodeError: Não foi possível decodificar a resposta JSON")
         logging.error(f"Response content: {response.text}")
         return None
+
+# Função para gerar resposta usando OpenAI com gpt-4-turbo
+def gerar_resposta_openai(mensagem, idioma):
+    messages = [
+        {"role": "system", "content": "You are a helpful and friendly virtual assistant."},
+        {"role": "user", "content": mensagem}
+    ]
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        max_tokens=150
+    )
+    
+    return response.choices[0].message['content'].strip()
 
 # Endpoint principal para receber mensagens
 @app.route('/webhook', methods=['POST'])
